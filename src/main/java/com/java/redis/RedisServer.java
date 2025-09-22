@@ -1,6 +1,7 @@
 package com.java.redis;
 
 import com.java.redis.commands.Command;
+import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
 
 import java.io.BufferedReader;
@@ -14,10 +15,12 @@ import java.util.List;
 
 public class RedisServer {
     private final Socket clientSocket;
+    private final RedisDB redisDB;
     private ClientRequest clientRequest;
 
-    public RedisServer(Socket clientSocket) {
+    public RedisServer(Socket clientSocket, RedisDB redisDB) {
         this.clientSocket = clientSocket;
+        this.redisDB = redisDB;
     }
 
     public void respondToClientRequest() {
@@ -30,10 +33,10 @@ public class RedisServer {
         ) {
             while (readClientRequest(reader, outputStream)) {
                 try {
-                    Command command = RedisCommands.getCommand(clientRequest, outputStream);
+                    Command command = RedisCommands.getCommand(clientRequest, outputStream, redisDB);
                     command.executeCommand();
                 } catch (Exception e) {
-                    System.out.println("Exception While running the command: " + this.clientRequest.getCommand() + "is" + e.getMessage());
+                    System.out.println("Exception While running the command: " + this.clientRequest.getCommand() + ": " + e.getMessage());
                 }
             }
         } catch (IOException e) {

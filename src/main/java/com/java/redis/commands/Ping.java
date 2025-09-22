@@ -6,11 +6,10 @@ import com.java.redis.utils.ResponseConstructor;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
-public class Echo extends Command {
+public class Ping extends Command {
 
-    public Echo(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
+    public Ping(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
         this.outputStream = outputStream;
         this.clientRequest = clientRequest;
         this.redisDB = redisDB;
@@ -19,9 +18,9 @@ public class Echo extends Command {
     @Override
     public void executeCommand() throws Exception {
         try {
-            validateCommand(SupportedCommand.ECHO);
+            validateCommand(SupportedCommand.PING);
 
-            outputStream.write(ResponseConstructor.constructBulkString(this.clientRequest.getArgs().getFirst()));
+            outputStream.write(ResponseConstructor.constructSimpleString("PONG"));
             outputStream.flush();
         } catch (IOException io) {
             throw new RuntimeException("I/O error while replying to client", io);

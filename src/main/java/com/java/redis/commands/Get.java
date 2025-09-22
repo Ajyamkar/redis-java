@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-public class Echo extends Command {
+public class Get extends Command {
 
-    public Echo(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
+    public Get(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB){
         this.outputStream = outputStream;
         this.clientRequest = clientRequest;
         this.redisDB = redisDB;
@@ -19,10 +19,14 @@ public class Echo extends Command {
     @Override
     public void executeCommand() throws Exception {
         try {
-            validateCommand(SupportedCommand.ECHO);
+            List<String> args = this.clientRequest.getArgs();
 
-            outputStream.write(ResponseConstructor.constructBulkString(this.clientRequest.getArgs().getFirst()));
+            validateCommand(SupportedCommand.GET);
+            String value = redisDB.getData(args.getFirst());
+
+            outputStream.write(value==null ? ResponseConstructor.nullBulkString(): ResponseConstructor.constructBulkString(value));
             outputStream.flush();
+
         } catch (IOException io) {
             throw new RuntimeException("I/O error while replying to client", io);
         }

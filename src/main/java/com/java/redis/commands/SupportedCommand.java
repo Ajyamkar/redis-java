@@ -1,5 +1,8 @@
 package com.java.redis.commands;
 
 public enum SupportedCommand {
-    ECHO
+    PING,
+    ECHO,
+    SET,
+    GET
 }

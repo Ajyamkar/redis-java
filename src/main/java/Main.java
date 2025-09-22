@@ -1,4 +1,5 @@
 import com.java.redis.RedisServer;
+import com.java.redis.database.RedisDB;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -19,14 +20,17 @@ public class Main {
             // ensures that we don't run into 'Address already in use' errors
             serverSocket.setReuseAddress(true);
 
+            RedisDB redisDB = new RedisDB();
+
             // Continuous server running...
-            while (true){
+            while (true) {
                 // Wait for connection from client.
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New connection");
+                System.out.println("Redis Db" + redisDB.getFullData());
 
-                executor.submit(()-> {
-                    RedisServer redisServer = new RedisServer(clientSocket);
+                executor.submit(() -> {
+                    RedisServer redisServer = new RedisServer(clientSocket, redisDB);
                     redisServer.respondToClientRequest();
                 });
             }
