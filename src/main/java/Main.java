@@ -1,4 +1,4 @@
-import com.redis.java.RedisServer;
+import com.java.redis.RedisServer;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -24,14 +24,10 @@ public class Main {
                 // Wait for connection from client.
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New connection");
-                executor.submit(()-> {
 
+                executor.submit(()-> {
                     RedisServer redisServer = new RedisServer(clientSocket);
-                    try {
-                        redisServer.execute();
-                    } catch (IOException e) {
-                        System.out.println("IOException calling redis server: " + e.getMessage());
-                    }
+                    redisServer.respondToClientRequest();
                 });
             }
 
