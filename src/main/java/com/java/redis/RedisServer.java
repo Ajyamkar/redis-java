@@ -31,7 +31,7 @@ public class RedisServer {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              OutputStream outputStream = clientSocket.getOutputStream();
         ) {
-            while (readClientRequest(reader, outputStream)) {
+            while (readClientRequest(reader)) {
                 try {
                     Command command = RedisCommands.getCommand(clientRequest, outputStream, redisDB);
                     command.executeCommand();
@@ -44,12 +44,16 @@ public class RedisServer {
         }
     }
 
-    public boolean readClientRequest(BufferedReader reader, OutputStream outputStream) throws IOException {
+    public boolean readClientRequest(BufferedReader reader) throws IOException {
         clientRequest = new ClientRequest();
 
         String firstLine = reader.readLine();
         if (firstLine == null) {
             return false; // client disconnected
+        }
+
+        if(!firstLine.startsWith("*")) {
+            throw new IOException("Invalid command - Invalid RESP format: Expected array start '*'");
         }
 
         // Example: *2 (array of 2 items: command + arg(s))
@@ -79,8 +83,8 @@ public class RedisServer {
                 argCount--;
             }
 
-            this.clientRequest.setArgs(args);
             System.out.println("args: " + args);
+            this.clientRequest.setArgs(args);
         } catch (Exception e) {
             System.out.println(e);
         }

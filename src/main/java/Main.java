@@ -28,6 +28,7 @@ public class Main {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New connection");
                 System.out.println("Redis Db" + redisDB.getFullData());
+                redisDB.printFullKeyExpiryDataStore();
 
                 executor.submit(() -> {
                     RedisServer redisServer = new RedisServer(clientSocket, redisDB);

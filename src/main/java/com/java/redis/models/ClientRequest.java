@@ -3,11 +3,13 @@ package com.java.redis.models;
 import com.java.redis.commands.SupportedCommand;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientRequest {
     private int requestLength;
     private SupportedCommand command;
     private String nonSupportedCommandName;
+    private ConcurrentHashMap<String, String> commandOptionKeyValue =  new ConcurrentHashMap<>();
     private List<String> args;
 
     public int getRequestLength() {
@@ -45,5 +47,13 @@ public class ClientRequest {
 
     public void setNonSupportedCommandName(String nonSupportedCommandName) {
         this.nonSupportedCommandName = nonSupportedCommandName;
+    }
+
+    public ConcurrentHashMap<String, String> getCommandOptionKeyValue() {
+        return commandOptionKeyValue;
+    }
+
+    public void setCommandOptionKeyValue(String option, String value) {
+       commandOptionKeyValue.put(option, value);
     }
 }
