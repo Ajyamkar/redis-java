@@ -68,17 +68,19 @@ public class RedisDB {
         return keyListDataStore.get(key);
     }
 
-    public int storeKeyList(String key, String valueInList) throws Exception {
+    public int storeKeyList(String key, List<String> valueInList) throws Exception {
         // Check if the key doesn't hold string value in the Db.
         if (getKeyValueData(key) == null) {
             try {
+                // If the key is present in keyList store such append the new values
                 ArrayList<String> ans = new ArrayList<>(getKeyList(key));
-                ans.add(valueInList);
+                ans.addAll(valueInList);
                 keyListDataStore.put(key, ans);
                 return ans.size();
             } catch (NullPointerException e) {
-                keyListDataStore.put(key, new ArrayList<>(Collections.singletonList(valueInList)));
-                return 1;
+                // If the key is not present in keyList Store.
+                keyListDataStore.put(key, new ArrayList<>(valueInList));
+                return valueInList.size();
             } catch (Exception e) {
                 throw new Exception(e);
             }
