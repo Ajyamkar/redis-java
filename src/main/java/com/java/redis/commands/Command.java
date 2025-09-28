@@ -15,6 +15,10 @@ public abstract class Command {
     public void validateCommand(SupportedCommand command) throws Exception {
         List<String> args = this.clientRequest.getArgs();
 
+        if (command == SupportedCommand.LRANGE && args.size() < CommandOptions.LRANGE_DEFAULT_ARGS_SIZE){
+            throw new Exception("Redis LRANGE command requires minimum 3 args but found " + args.size() + " args");
+        }
+
         if (command == SupportedCommand.RPUSH && args.size() < CommandOptions.RPUSH_DEFAULT_ARGS_SIZE){
             throw new Exception("Redis RPUSH command requires minimum 2 args but found " + args.size() + " args");
         }

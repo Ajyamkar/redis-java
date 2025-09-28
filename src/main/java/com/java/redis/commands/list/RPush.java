@@ -1,11 +1,12 @@
-package com.java.redis.commands;
+package com.java.redis.commands.list;
 
+import com.java.redis.commands.Command;
+import com.java.redis.commands.SupportedCommand;
 import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
 import com.java.redis.utils.ResponseConstructor;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RPush extends Command {

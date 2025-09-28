@@ -2,7 +2,7 @@ package com.java.redis.commands;
 
 import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
-import com.java.redis.models.KeyExpiry;
+import com.java.redis.database.models.KeyExpiry;
 import com.java.redis.utils.ResponseConstructor;
 
 import java.io.OutputStream;

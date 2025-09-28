@@ -1,5 +1,7 @@
 package com.java.redis.utils;
 
+import java.util.List;
+
 import static com.java.redis.utils.Constants.*;
 
 public class ResponseConstructor {
@@ -21,7 +23,17 @@ public class ResponseConstructor {
         return (ERROR_PREFIX + message + END_OF_LINE).getBytes();
     }
 
-    public static byte[] constructIntegerReply(Integer value){
-        return (SIMPLE_INTEGER_PREFIX+ value + END_OF_LINE).getBytes();
+    public static byte[] constructIntegerReply(Integer value) {
+        return (SIMPLE_INTEGER_PREFIX + value + END_OF_LINE).getBytes();
+    }
+
+    public static byte[] constructArrayResponse(List<String> values) {
+        String start = ARRAY_PREFIX + values.size() + END_OF_LINE;
+        StringBuilder end = new StringBuilder();
+        for(String val:values){
+            end.append(BULK_STRINGS_PREFIX).append(val.length()).append(END_OF_LINE).append(val).append(END_OF_LINE);
+        }
+
+        return (start + end.toString()).getBytes();
     }
 }

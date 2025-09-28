@@ -1,4 +1,4 @@
-package com.java.redis.models;
+package com.java.redis.database.models;
 
 import java.util.Optional;
 

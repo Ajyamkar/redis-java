@@ -1,6 +1,6 @@
 package com.java.redis.database;
 
-import com.java.redis.models.KeyExpiry;
+import com.java.redis.database.models.KeyExpiry;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,7 +85,6 @@ public class RedisDB {
                 throw new Exception(e);
             }
         }
-
         return -1;
     }
 }

@@ -1,6 +1,8 @@
 package com.java.redis;
 
 import com.java.redis.commands.*;
+import com.java.redis.commands.list.LRANGE;
+import com.java.redis.commands.list.RPush;
 import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
 
@@ -16,6 +18,7 @@ public class RedisCommands {
                 case SET -> new Set(outputStream, clientRequest, redisDB);
                 case GET -> new Get(outputStream, clientRequest, redisDB);
                 case RPUSH -> new RPush(outputStream, clientRequest, redisDB);
+                case LRANGE -> new LRANGE(outputStream, clientRequest, redisDB);
                 case null, default -> new NonSupportedCommand(outputStream, clientRequest, redisDB);
             };
         } catch (IllegalArgumentException e) {
