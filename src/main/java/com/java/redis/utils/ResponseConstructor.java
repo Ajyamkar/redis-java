@@ -10,7 +10,6 @@ public class ResponseConstructor {
 
     public static byte[] constructBulkString(String message) {
         String response = (BULK_STRINGS_PREFIX + message.getBytes().length + END_OF_LINE + message + END_OF_LINE);
-        System.out.println("response: " + response);
         return response.getBytes();
     }
 
@@ -20,5 +19,9 @@ public class ResponseConstructor {
 
     public static byte[] constructErrorResponse(String message) {
         return (ERROR_PREFIX + message + END_OF_LINE).getBytes();
+    }
+
+    public static byte[] constructIntegerReply(Integer value){
+        return (SIMPLE_INTEGER_PREFIX+ value + END_OF_LINE).getBytes();
     }
 }

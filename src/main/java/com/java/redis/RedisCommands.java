@@ -15,6 +15,7 @@ public class RedisCommands {
                 case ECHO -> new Echo(outputStream, clientRequest, redisDB);
                 case SET -> new Set(outputStream, clientRequest, redisDB);
                 case GET -> new Get(outputStream, clientRequest, redisDB);
+                case RPUSH -> new RPush(outputStream, clientRequest, redisDB);
                 case null, default -> new NonSupportedCommand(outputStream, clientRequest, redisDB);
             };
         } catch (IllegalArgumentException e) {

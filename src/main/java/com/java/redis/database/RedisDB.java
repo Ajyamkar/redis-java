@@ -2,30 +2,35 @@ package com.java.redis.database;
 
 import com.java.redis.models.KeyExpiry;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RedisDB {
-    ConcurrentHashMap<String, String> dataStore = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, String> keyValueDataStore = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, KeyExpiry> keyExpiryDataStore = new ConcurrentHashMap<>();
 
-    public void store(String key, String value, Optional<KeyExpiry> keyExpiry) {
-        dataStore.put(key, value);
+    ConcurrentHashMap<String, ArrayList<String>> keyListDataStore = new ConcurrentHashMap<>();
+
+    public void storeKeyValueData(String key, String value, Optional<KeyExpiry> keyExpiry) {
+        keyValueDataStore.put(key, value);
         keyExpiry.ifPresent(expiry -> keyExpiryDataStore.put(key, expiry));
     }
 
-    public String getData(String key) {
-        KeyExpiry keyExpiry = keyExpiryDataStore.get(key);
+    public String getKeyValueData(String key) throws RuntimeException {
+        try {
+            KeyExpiry keyExpiry = keyExpiryDataStore.get(key);
 
-        if (keyExpiry != null && isKeyExpired(key, keyExpiry)) {
-            updateKeyExpiryDataStore(key, keyExpiry.getPreviousValue(), keyExpiry.getExpiresAt(), true);
-            return null;
+            if (keyExpiry != null && isKeyExpired(key, keyExpiry)) {
+                updateKeyExpiryDataStore(key, keyExpiry.getPreviousValue(), keyExpiry.getExpiresAt(), true);
+                return null;
+            }
+            return keyValueDataStore.get(key);
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while getting the value for key: " + key + " from DB is: " + e);
         }
-        return dataStore.get(key);
     }
 
-    public void updateKeyExpiryDataStore(String key, Optional<String> previousValue, Optional<Long> expiresAt, boolean isExpired) {
+    private void updateKeyExpiryDataStore(String key, Optional<String> previousValue, Optional<Long> expiresAt, boolean isExpired) {
         KeyExpiry newExpiry = new KeyExpiry();
         newExpiry.setPreviousValue(previousValue);
         newExpiry.setExpiresAt(expiresAt);
@@ -34,7 +39,7 @@ public class RedisDB {
         keyExpiryDataStore.put(key, newExpiry);
     }
 
-    public boolean isKeyExpired(String key, KeyExpiry keyExpiry) {
+    private boolean isKeyExpired(String key, KeyExpiry keyExpiry) {
         if (keyExpiryDataStore.containsKey(key)) {
 
             if (keyExpiry.getIsExpired()) {
@@ -49,18 +54,36 @@ public class RedisDB {
     }
 
     public ConcurrentHashMap<String, String> getFullData() {
-        return dataStore;
-    }
-
-    public ConcurrentHashMap<String, KeyExpiry> getFullKeyExpiryDataStore() {
-        return keyExpiryDataStore;
+        return keyValueDataStore;
     }
 
     public void printFullKeyExpiryDataStore() {
         for (Map.Entry<String, KeyExpiry> entry : keyExpiryDataStore.entrySet()) {
             KeyExpiry value = entry.getValue();
             System.out.println("key: " + entry.getKey() + " value.getPreviousValue: " + value.getPreviousValue() + " value.getIsExpired " + value.getIsExpired() + " value.getExpiresAt " + value.getExpiresAt());
-
         }
+    }
+
+    public ArrayList<String> getKeyList(String key) throws RuntimeException {
+        return keyListDataStore.get(key);
+    }
+
+    public int storeKeyList(String key, String valueInList) throws Exception {
+        // Check if the key doesn't hold string value in the Db.
+        if (getKeyValueData(key) == null) {
+            try {
+                ArrayList<String> ans = new ArrayList<>(getKeyList(key));
+                ans.add(valueInList);
+                keyListDataStore.put(key, ans);
+                return ans.size();
+            } catch (NullPointerException e) {
+                keyListDataStore.put(key, new ArrayList<>(Collections.singletonList(valueInList)));
+                return 1;
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        }
+
+        return -1;
     }
 }

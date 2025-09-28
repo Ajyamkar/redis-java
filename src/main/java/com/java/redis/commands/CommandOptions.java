@@ -9,4 +9,5 @@ public class CommandOptions {
     public static int SET_DEFAULT_ARGS_SIZE = 2;
     public static int GET_DEFAULT_ARGS_SIZE = 1;
     public static int ECHO_DEFAULT_ARGS_SIZE = 1;
+    public static int RPUSH_DEFAULT_ARGS_SIZE = 2;
 }

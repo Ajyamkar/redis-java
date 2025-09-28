@@ -4,5 +4,6 @@ public enum SupportedCommand {
     PING,
     ECHO,
     SET,
-    GET
+    GET,
+    RPUSH
 }

@@ -9,7 +9,7 @@ public class ClientRequest {
     private int requestLength;
     private SupportedCommand command;
     private String nonSupportedCommandName;
-    private ConcurrentHashMap<String, String> commandOptionKeyValue =  new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> commandOptionKeyValue =  new ConcurrentHashMap<>();
     private List<String> args;
 
     public int getRequestLength() {

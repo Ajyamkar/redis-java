@@ -31,10 +31,11 @@ public class Set extends Command {
             Optional<KeyExpiry> options = Optional.empty();
             if (args.size() > CommandOptions.SET_DEFAULT_ARGS_SIZE) {
                 // TODO:Add support for options other than expiry options
+                // TODO: Find Better ways to parse command option i.e use CommandOptionKeyValue
                 options = constructExpiryOptionFields(args.getFirst(), args.get(2), args.get(3));
             }
 
-            redisDB.store(args.getFirst(), args.get(1), options);
+            redisDB.storeKeyValueData(args.getFirst(), args.get(1), options);
             outputStream.write(ResponseConstructor.constructSimpleString("OK"));
             outputStream.flush();
         } catch (Exception e) {
@@ -50,7 +51,13 @@ public class Set extends Command {
         }
         KeyExpiry keyExpiry = new KeyExpiry();
 
-        keyExpiry.setPreviousValue(Optional.ofNullable(redisDB.getData(key)));
+        try {
+            keyExpiry.setPreviousValue(Optional.of(redisDB.getKeyValueData(key)));
+        } catch (Exception e) {
+            // key not found in DB.
+            keyExpiry.setPreviousValue(Optional.empty());
+        }
+
         keyExpiry.setExpiresAt(Optional.of(System.currentTimeMillis() + value));
         keyExpiry.setIsExpired(false);
 
