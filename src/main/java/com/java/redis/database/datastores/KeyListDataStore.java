@@ -3,7 +3,7 @@ package com.java.redis.database.datastores;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeyListDataStore extends DataStoreGenericClass<ArrayList<String>> {
+public class KeyListDataStore extends DataStore<ArrayList<String>> {
     private final KeyValueDataStore keyValueDataStore;
 
     public KeyListDataStore(KeyValueDataStore keyValueDataStore){

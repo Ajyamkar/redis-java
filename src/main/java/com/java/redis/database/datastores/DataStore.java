@@ -2,7 +2,7 @@ package com.java.redis.database.datastores;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class DataStoreGenericClass<T> {
+public abstract class DataStore<T> {
     private final ConcurrentHashMap<String, T> dataStore = new ConcurrentHashMap<>();
 
     public ConcurrentHashMap<String, T> getDataStore(){

@@ -4,7 +4,7 @@ import com.java.redis.database.models.KeyExpiry;
 
 import java.util.Optional;
 
-public class KeyValueDataStore extends DataStoreGenericClass<String> {
+public class KeyValueDataStore extends DataStore<String> {
     private final KeyExpiryDataStore keyExpiryDataStore = new KeyExpiryDataStore();
 
     public void storeKeyValueData(String key, String value, Optional<KeyExpiry> keyExpiry) {

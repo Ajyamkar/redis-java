@@ -3,9 +3,8 @@ package com.java.redis.database.datastores;
 import com.java.redis.database.models.KeyExpiry;
 
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class KeyExpiryDataStore extends DataStoreGenericClass<KeyExpiry> {
+public class KeyExpiryDataStore extends DataStore<KeyExpiry> {
 
     public boolean isKeyExpired(String key, KeyExpiry keyExpiry) {
         if (getDataStore().containsKey(key)) {
