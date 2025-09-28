@@ -24,7 +24,7 @@ public class RPush extends Command {
             List<String> args = this.clientRequest.getArgs();
             String key = args.getFirst();
             List<String> values = args.subList(1, args.size());
-            int response = redisDB.storeKeyList(key, values);
+            int response = redisDB.getKeyListDataStore().storeKeyList(key, values);
             if(response == -1) {
                 outputStream.write(ResponseConstructor.constructErrorResponse("Key "+key+" holds a value that is not a list."));
             } else {

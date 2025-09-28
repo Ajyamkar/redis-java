@@ -35,7 +35,7 @@ public class Set extends Command {
                 options = constructExpiryOptionFields(args.getFirst(), args.get(2), args.get(3));
             }
 
-            redisDB.storeKeyValueData(args.getFirst(), args.get(1), options);
+            redisDB.getKeyValueDataStore().storeKeyValueData(args.getFirst(), args.get(1), options);
             outputStream.write(ResponseConstructor.constructSimpleString("OK"));
             outputStream.flush();
         } catch (Exception e) {
@@ -52,7 +52,7 @@ public class Set extends Command {
         KeyExpiry keyExpiry = new KeyExpiry();
 
         try {
-            keyExpiry.setPreviousValue(Optional.of(redisDB.getKeyValueData(key)));
+            keyExpiry.setPreviousValue(Optional.of(redisDB.getKeyValueDataStore().getKeyValueData(key)));
         } catch (Exception e) {
             // key not found in DB.
             keyExpiry.setPreviousValue(Optional.empty());

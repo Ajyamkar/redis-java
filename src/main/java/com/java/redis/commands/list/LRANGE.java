@@ -29,7 +29,7 @@ public class LRANGE extends Command {
             int start = Integer.parseInt(args.get(1));
             int stop = Integer.parseInt(args.get(2));
 
-            List<String> values = redisDB.getKeyList(key);
+            List<String> values = redisDB.getKeyListDataStore().getData(key);
 
             if (values==null|| (start>stop && stop>0) || start>=values.size()){
                 outputStream.write(ResponseConstructor.constructArrayResponse(new ArrayList<>()));

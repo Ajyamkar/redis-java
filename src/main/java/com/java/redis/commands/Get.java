@@ -22,7 +22,7 @@ public class Get extends Command {
             List<String> args = this.clientRequest.getArgs();
 
             validateCommand(SupportedCommand.GET);
-            String value = redisDB.getKeyValueData(args.getFirst());
+            String value = redisDB.getKeyValueDataStore().getKeyValueData(args.getFirst());
 
             outputStream.write(ResponseConstructor.constructBulkString(value));
         } catch (RuntimeException e) {
