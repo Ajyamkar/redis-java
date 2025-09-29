@@ -1,6 +1,7 @@
 package com.java.redis;
 
 import com.java.redis.commands.*;
+import com.java.redis.commands.list.LPush;
 import com.java.redis.commands.list.LRANGE;
 import com.java.redis.commands.list.RPush;
 import com.java.redis.database.RedisDB;
@@ -8,9 +9,9 @@ import com.java.redis.models.ClientRequest;
 
 import java.io.OutputStream;
 
-public class RedisCommands {
+public class RedisCommandsFactory {
 
-    public static Command getCommand(ClientRequest clientRequest, OutputStream outputStream,  RedisDB redisDB) {
+    public static Command getCommand(ClientRequest clientRequest, OutputStream outputStream, RedisDB redisDB) {
         try {
             return switch (clientRequest.getCommand()) {
                 case PING -> new Ping(outputStream, clientRequest, redisDB);
@@ -19,6 +20,7 @@ public class RedisCommands {
                 case GET -> new Get(outputStream, clientRequest, redisDB);
                 case RPUSH -> new RPush(outputStream, clientRequest, redisDB);
                 case LRANGE -> new LRANGE(outputStream, clientRequest, redisDB);
+                case LPUSH -> new LPush(outputStream, clientRequest, redisDB);
                 case null, default -> new NonSupportedCommand(outputStream, clientRequest, redisDB);
             };
         } catch (IllegalArgumentException e) {

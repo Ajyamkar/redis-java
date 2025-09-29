@@ -6,5 +6,6 @@ public enum SupportedCommand {
     SET,
     GET,
     RPUSH,
-    LRANGE
+    LRANGE,
+    LPUSH
 }

@@ -33,7 +33,7 @@ public class RedisServer {
         ) {
             while (readClientRequest(reader)) {
                 try {
-                    Command command = RedisCommands.getCommand(clientRequest, outputStream, redisDB);
+                    Command command = RedisCommandsFactory.getCommand(clientRequest, outputStream, redisDB);
                     command.executeCommand();
                 } catch (Exception e) {
                     System.out.println("Exception While running the command: " + this.clientRequest.getCommand() + ": " + e.getMessage());
