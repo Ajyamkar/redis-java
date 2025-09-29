@@ -7,5 +7,6 @@ public enum SupportedCommand {
     GET,
     RPUSH,
     LRANGE,
-    LPUSH
+    LPUSH,
+    LLEN
 }

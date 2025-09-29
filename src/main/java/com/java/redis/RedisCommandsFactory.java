@@ -1,6 +1,7 @@
 package com.java.redis;
 
 import com.java.redis.commands.*;
+import com.java.redis.commands.list.LLen;
 import com.java.redis.commands.list.LPush;
 import com.java.redis.commands.list.LRANGE;
 import com.java.redis.commands.list.RPush;
@@ -21,6 +22,7 @@ public class RedisCommandsFactory {
                 case RPUSH -> new RPush(outputStream, clientRequest, redisDB);
                 case LRANGE -> new LRANGE(outputStream, clientRequest, redisDB);
                 case LPUSH -> new LPush(outputStream, clientRequest, redisDB);
+                case LLEN -> new LLen(outputStream, clientRequest, redisDB);
                 case null, default -> new NonSupportedCommand(outputStream, clientRequest, redisDB);
             };
         } catch (IllegalArgumentException e) {
