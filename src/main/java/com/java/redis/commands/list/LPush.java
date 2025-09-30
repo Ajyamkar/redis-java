@@ -1,7 +1,7 @@
 package com.java.redis.commands.list;
 
 import com.java.redis.commands.Command;
-import com.java.redis.commands.SupportedCommand;
+import com.java.redis.commands.CommandOptions;
 import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
 import com.java.redis.utils.ResponseConstructor;
@@ -10,23 +10,24 @@ import java.io.OutputStream;
 import java.util.List;
 
 public class LPush extends Command {
-    public LPush(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
-        this.outputStream = outputStream;
-        this.clientRequest = clientRequest;
-        this.redisDB = redisDB;
+    @Override
+    public void validateCommand(List<String> args) throws Exception {
+        if (args.size() < CommandOptions.LPUSH_DEFAULT_ARGS_SIZE) {
+            throw new Exception("Redis LPUSH command requires minimum 2 args but found " + args.size() + " args");
+        }
     }
 
     @Override
-    public void executeCommand() {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
         try {
-            validateCommand(SupportedCommand.LPUSH);
-            List<String> args = this.clientRequest.getArgs();
+            List<String> args = clientRequest.getArgs();
+            validateCommand(args);
             String key = args.getFirst();
             List<String> values = args.subList(1, args.size());
 
             int response = redisDB.getKeyListDataStore().storeKeyListByPrepend(key, values);
-            if(response == -1) {
-                outputStream.write(ResponseConstructor.constructErrorResponse("Key "+key+" holds a value that is not a list."));
+            if (response == -1) {
+                outputStream.write(ResponseConstructor.constructErrorResponse("Key " + key + " holds a value that is not a list."));
             } else {
                 outputStream.write(ResponseConstructor.constructIntegerReply(response));
             }

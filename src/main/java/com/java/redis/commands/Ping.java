@@ -6,19 +6,20 @@ import com.java.redis.utils.ResponseConstructor;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 public class Ping extends Command {
-
-    public Ping(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
-        this.outputStream = outputStream;
-        this.clientRequest = clientRequest;
-        this.redisDB = redisDB;
+    @Override
+    public void validateCommand(List<String> args) throws Exception {
+        if (!args.isEmpty()) {
+            throw new Exception("Redis PING command requires 0 arg but found " + args.size() + " args");
+        }
     }
 
     @Override
-    public void executeCommand() throws Exception {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
         try {
-            validateCommand(SupportedCommand.PING);
+            validateCommand(clientRequest.getArgs());
 
             outputStream.write(ResponseConstructor.constructSimpleString("PONG"));
             outputStream.flush();

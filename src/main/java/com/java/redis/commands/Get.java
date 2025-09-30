@@ -10,18 +10,19 @@ import java.util.List;
 
 public class Get extends Command {
 
-    public Get(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
-        this.outputStream = outputStream;
-        this.clientRequest = clientRequest;
-        this.redisDB = redisDB;
+    @Override
+    public void validateCommand(List<String> args) throws Exception {
+        if (args.size() != CommandOptions.GET_DEFAULT_ARGS_SIZE) {
+            throw new Exception("Redis GET command requires 1 arg but found " + args.size() + " args");
+        }
     }
 
     @Override
-    public void executeCommand() throws Exception {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
         try {
-            List<String> args = this.clientRequest.getArgs();
+            List<String> args = clientRequest.getArgs();
 
-            validateCommand(SupportedCommand.GET);
+            validateCommand(args);
             String value = redisDB.getKeyValueDataStore().getKeyValueData(args.getFirst());
 
             outputStream.write(ResponseConstructor.constructBulkString(value));

@@ -2,6 +2,7 @@ package com.java.redis;
 
 import com.java.redis.commands.Command;
 import com.java.redis.database.RedisDB;
+import com.java.redis.factories.commands.CommandFactory;
 import com.java.redis.models.ClientRequest;
 
 import java.io.BufferedReader;
@@ -33,8 +34,8 @@ public class RedisServer {
         ) {
             while (readClientRequest(reader)) {
                 try {
-                    Command command = RedisCommandsFactory.getCommand(clientRequest, outputStream, redisDB);
-                    command.executeCommand();
+                    CommandFactory commandFactory = RedisCommandsFactory.getCommand(clientRequest, outputStream, redisDB);
+                    commandFactory.executeCommand(outputStream,clientRequest,redisDB);
                 } catch (Exception e) {
                     System.out.println("Exception While running the command: " + this.clientRequest.getCommand() + ": " + e.getMessage());
                 }

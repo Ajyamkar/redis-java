@@ -10,18 +10,19 @@ import java.util.List;
 
 public class Echo extends Command {
 
-    public Echo(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
-        this.outputStream = outputStream;
-        this.clientRequest = clientRequest;
-        this.redisDB = redisDB;
+    @Override
+    public void validateCommand(List<String> args) throws Exception {
+        if (args.size() != CommandOptions.ECHO_DEFAULT_ARGS_SIZE) {
+            throw new Exception("Redis ECHO command requires 1 arg but found " + args.size() + " args");
+        }
     }
 
     @Override
-    public void executeCommand() throws Exception {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
         try {
-            validateCommand(SupportedCommand.ECHO);
+            validateCommand(clientRequest.getArgs());
 
-            outputStream.write(ResponseConstructor.constructBulkString(this.clientRequest.getArgs().getFirst()));
+            outputStream.write(ResponseConstructor.constructBulkString(clientRequest.getArgs().getFirst()));
             outputStream.flush();
         } catch (IOException io) {
             throw new RuntimeException("I/O error while replying to client", io);

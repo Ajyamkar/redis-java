@@ -1,30 +1,29 @@
 package com.java.redis.commands.list;
 
 import com.java.redis.commands.Command;
-import com.java.redis.commands.SupportedCommand;
+import com.java.redis.commands.CommandOptions;
 import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
 import com.java.redis.utils.ResponseConstructor;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class LRANGE extends Command {
-    public LRANGE(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
-        this.outputStream = outputStream;
-        this.clientRequest = clientRequest;
-        this.redisDB = redisDB;
+    @Override
+    public void validateCommand(List<String> args) throws Exception {
+        if (args.size() < CommandOptions.LRANGE_DEFAULT_ARGS_SIZE){
+            throw new Exception("Redis LRANGE command requires minimum 3 args but found " + args.size() + " args");
+        }
     }
 
     @Override
-    public void executeCommand() {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
         try {
-            validateCommand(SupportedCommand.LRANGE);
+            List<String> args = clientRequest.getArgs();
+            validateCommand(args);
 
-            List<String> args = this.clientRequest.getArgs();
             String key = args.getFirst();
             int start = Integer.parseInt(args.get(1));
             int stop = Integer.parseInt(args.get(2));

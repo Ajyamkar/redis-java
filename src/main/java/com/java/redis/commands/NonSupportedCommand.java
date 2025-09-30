@@ -6,21 +6,19 @@ import com.java.redis.utils.ResponseConstructor;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
-import static com.java.redis.utils.Constants.END_OF_LINE;
+import java.util.List;
 
 public class NonSupportedCommand extends Command {
 
-    public NonSupportedCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
-        this.outputStream = outputStream;
-        this.clientRequest = clientRequest;
-        this.redisDB = redisDB;
+    @Override
+    public void validateCommand(List<String> args) throws Exception {
+        return;
     }
 
     @Override
-    public void executeCommand() {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
         try {
-            outputStream.write(ResponseConstructor.constructErrorResponse(" unknown command " + this.clientRequest.getNonSupportedCommandName()));
+            outputStream.write(ResponseConstructor.constructErrorResponse(" unknown command " + clientRequest.getNonSupportedCommandName()));
             outputStream.flush();
         } catch (IOException e) {
             throw new RuntimeException("I/O error while replying to client", e);

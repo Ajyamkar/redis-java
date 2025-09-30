@@ -1,30 +1,38 @@
 package com.java.redis;
 
 import com.java.redis.commands.*;
-import com.java.redis.commands.list.LLen;
-import com.java.redis.commands.list.LPush;
-import com.java.redis.commands.list.LRANGE;
-import com.java.redis.commands.list.RPush;
 import com.java.redis.database.RedisDB;
+import com.java.redis.factories.commands.*;
+import com.java.redis.factories.commands.list.*;
 import com.java.redis.models.ClientRequest;
 
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RedisCommandsFactory {
+    private static final Map<SupportedCommand, CommandFactory> registry = new HashMap<>();
 
-    public static Command getCommand(ClientRequest clientRequest, OutputStream outputStream, RedisDB redisDB) {
+    static {
+        registry.put(SupportedCommand.PING, new PingFactory());
+        registry.put(SupportedCommand.ECHO, new EchoFactory());
+        registry.put(SupportedCommand.SET, new SetFactory());
+        registry.put(SupportedCommand.GET, new GetFactory());
+        registry.put(SupportedCommand.RPUSH, new RPushFactory());
+        registry.put(SupportedCommand.LRANGE, new LRangeFactory());
+        registry.put(SupportedCommand.LPUSH, new LPushFactory());
+        registry.put(SupportedCommand.LLEN, new LLenFactory());
+        registry.put(SupportedCommand.LPOP, new LPopFactory());
+    }
+
+
+    public static CommandFactory getCommand(ClientRequest clientRequest, OutputStream outputStream, RedisDB redisDB) {
         try {
-            return switch (clientRequest.getCommand()) {
-                case PING -> new Ping(outputStream, clientRequest, redisDB);
-                case ECHO -> new Echo(outputStream, clientRequest, redisDB);
-                case SET -> new Set(outputStream, clientRequest, redisDB);
-                case GET -> new Get(outputStream, clientRequest, redisDB);
-                case RPUSH -> new RPush(outputStream, clientRequest, redisDB);
-                case LRANGE -> new LRANGE(outputStream, clientRequest, redisDB);
-                case LPUSH -> new LPush(outputStream, clientRequest, redisDB);
-                case LLEN -> new LLen(outputStream, clientRequest, redisDB);
-                case null, default -> new NonSupportedCommand(outputStream, clientRequest, redisDB);
-            };
+            CommandFactory commandFactory = registry.get(clientRequest.getCommand());
+            if (commandFactory== null){
+                return new NonSupportedCommandFactory();
+            }
+            return commandFactory;
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Unsupported Redis command");
         }

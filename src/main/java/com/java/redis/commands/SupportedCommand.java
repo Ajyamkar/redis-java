@@ -8,5 +8,6 @@ public enum SupportedCommand {
     RPUSH,
     LRANGE,
     LPUSH,
-    LLEN
+    LLEN,
+    LPOP
 }
