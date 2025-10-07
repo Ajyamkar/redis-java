@@ -22,14 +22,32 @@ public class LPop extends Command {
     public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
         try {
             String key = clientRequest.getArgs().getFirst();
-            List<String> values = redisDB.getKeyListDataStore().getData(key);
-            if (values == null || values.isEmpty()) {
-                outputStream.write(ResponseConstructor.nullBulkString());
-            } else {
-                String removedValue = values.getFirst();
-                redisDB.getKeyListDataStore().updateData(key, new ArrayList<>(values.subList(1,values.size())));
-                outputStream.write(ResponseConstructor.constructBulkString(removedValue));
+            int removeElementsLen = 1;
+            if (clientRequest.getArgs().size() > 1) {
+                removeElementsLen = Integer.parseInt(clientRequest.getArgs().get(1));
             }
+
+            List<String> values = redisDB.getKeyListDataStore().getData(key);
+            byte[] response;
+            if (values == null || values.isEmpty()) {
+                response = ResponseConstructor.nullBulkString();
+            } else if (removeElementsLen == 1) {
+                String removedValue = values.getFirst();
+                redisDB.getKeyListDataStore().updateData(key, new ArrayList<>(values.subList(1, values.size())));
+                response = ResponseConstructor.constructBulkString(removedValue);
+            } else {
+                List<String> removedValues;
+                if (removeElementsLen >= values.size()) {
+                    removedValues = values;
+                    redisDB.getKeyListDataStore().updateData(key, new ArrayList<>());
+                } else {
+                    removedValues = values.subList(0, removeElementsLen);
+                    redisDB.getKeyListDataStore().updateData(key, new ArrayList<>(values.subList(removeElementsLen, values.size())));
+                }
+                response = ResponseConstructor.constructArrayResponse(removedValues);
+            }
+
+            outputStream.write(response);
             outputStream.flush();
         } catch (Exception e) {
             throw new RuntimeException(e);

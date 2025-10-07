@@ -9,6 +9,7 @@ import com.java.redis.models.ClientRequest;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RedisCommandsFactory {
     private static final Map<SupportedCommand, CommandFactory> registry = new HashMap<>();
@@ -29,10 +30,7 @@ public class RedisCommandsFactory {
     public static CommandFactory getCommand(ClientRequest clientRequest, OutputStream outputStream, RedisDB redisDB) {
         try {
             CommandFactory commandFactory = registry.get(clientRequest.getCommand());
-            if (commandFactory== null){
-                return new NonSupportedCommandFactory();
-            }
-            return commandFactory;
+            return Objects.requireNonNullElseGet(commandFactory, NonSupportedCommandFactory::new);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Unsupported Redis command");
         }
