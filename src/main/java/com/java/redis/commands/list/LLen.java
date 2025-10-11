@@ -19,13 +19,13 @@ public class LLen extends Command {
     }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws IOException {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) throws IOException {
         try {
             List<String> args = clientRequest.getArgs();
             String key = args.getFirst();
             validateCommand(args);
 
-            List<String> values = redisDB.getKeyListDataStore().getData(key);
+            List<String> values = RedisDB.INSTANCE.getKeyListDataStore().getData(key);
             outputStream.write(ResponseConstructor.constructIntegerReply(values.size()));
         } catch (Exception e) {
             outputStream.write(ResponseConstructor.constructIntegerReply(0));

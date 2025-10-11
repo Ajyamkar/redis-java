@@ -18,12 +18,12 @@ public class Get extends Command {
     }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) throws Exception {
         try {
             List<String> args = clientRequest.getArgs();
 
             validateCommand(args);
-            String value = redisDB.getKeyValueDataStore().getKeyValueData(args.getFirst());
+            String value = RedisDB.INSTANCE.getKeyValueDataStore().getKeyValueData(args.getFirst());
 
             outputStream.write(ResponseConstructor.constructBulkString(value));
         } catch (RuntimeException e) {

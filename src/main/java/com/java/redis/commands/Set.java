@@ -35,7 +35,7 @@ public class Set extends Command {
 //    }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) throws Exception {
         try {
             List<String> args = clientRequest.getArgs();
 
@@ -49,10 +49,10 @@ public class Set extends Command {
             if (args.size() > CommandOptions.SET_DEFAULT_ARGS_SIZE) {
                 // TODO:Add support for options other than expiry options
                 // TODO: Find Better ways to parse command option i.e use CommandOptionKeyValue
-                options = constructExpiryOptionFields(args.getFirst(), args.get(2), args.get(3), redisDB);
+                options = constructExpiryOptionFields(args.getFirst(), args.get(2), args.get(3));
             }
 
-            redisDB.getKeyValueDataStore().storeKeyValueData(args.getFirst(), args.get(1), options);
+            RedisDB.INSTANCE.getKeyValueDataStore().storeKeyValueData(args.getFirst(), args.get(1), options);
             outputStream.write(ResponseConstructor.constructSimpleString("OK"));
             outputStream.flush();
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class Set extends Command {
         }
     }
 
-    private Optional<KeyExpiry> constructExpiryOptionFields(String key, String optionalKey, String optionalValue, RedisDB redisDB) {
+    private Optional<KeyExpiry> constructExpiryOptionFields(String key, String optionalKey, String optionalValue) {
         long value = Long.parseLong(optionalValue);
         if (optionalKey.equalsIgnoreCase("EX")) {
             value = value * 1000; // 1s = 1000ms
@@ -69,7 +69,7 @@ public class Set extends Command {
         KeyExpiry keyExpiry = new KeyExpiry();
 
         try {
-            keyExpiry.setPreviousValue(Optional.of(redisDB.getKeyValueDataStore().getKeyValueData(key)));
+            keyExpiry.setPreviousValue(Optional.of(RedisDB.INSTANCE.getKeyValueDataStore().getKeyValueData(key)));
         } catch (Exception e) {
             // key not found in DB.
             keyExpiry.setPreviousValue(Optional.empty());

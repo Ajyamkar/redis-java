@@ -1,7 +1,5 @@
 package com.java.redis;
 
-import com.java.redis.commands.Command;
-import com.java.redis.database.RedisDB;
 import com.java.redis.factories.commands.CommandFactory;
 import com.java.redis.models.ClientRequest;
 
@@ -13,18 +11,21 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class RedisServer {
+public class RedisServer implements Runnable {
     private final Socket clientSocket;
-    private final RedisDB redisDB;
-    private ClientRequest clientRequest;
+    private final ClientRequest clientRequest;
 
-    public RedisServer(Socket clientSocket, RedisDB redisDB) {
+    public RedisServer(Socket clientSocket) {
         this.clientSocket = clientSocket;
-        this.redisDB = redisDB;
+        this.clientRequest = new ClientRequest();
     }
 
-    public void respondToClientRequest() {
+    @Override
+    public void run() {
+        respondToClientRequest();
+    }
+
+    private void respondToClientRequest() {
         System.out.println("Current Thread: " + Thread.currentThread().getName()
                 + " started: " + Thread.currentThread().getState()
                 + " and is listening for request..");
@@ -34,8 +35,8 @@ public class RedisServer {
         ) {
             while (readClientRequest(reader)) {
                 try {
-                    CommandFactory commandFactory = RedisCommandsFactory.getCommand(clientRequest, outputStream, redisDB);
-                    commandFactory.executeCommand(outputStream,clientRequest,redisDB);
+                    CommandFactory commandFactory = RedisCommandsFactory.getCommand(clientRequest, outputStream);
+                    commandFactory.executeCommand(outputStream, clientRequest);
                 } catch (Exception e) {
                     System.out.println("Exception While running the command: " + this.clientRequest.getCommand() + ": " + e.getMessage());
                 }
@@ -45,15 +46,13 @@ public class RedisServer {
         }
     }
 
-    public boolean readClientRequest(BufferedReader reader) throws IOException {
-        clientRequest = new ClientRequest();
-
+    private boolean readClientRequest(BufferedReader reader) throws IOException {
         String firstLine = reader.readLine();
         if (firstLine == null) {
             return false; // client disconnected
         }
 
-        if(!firstLine.startsWith("*")) {
+        if (!firstLine.startsWith("*")) {
             throw new IOException("Invalid command - Invalid RESP format: Expected array start '*'");
         }
 
@@ -91,5 +90,4 @@ public class RedisServer {
         }
         return true;
     }
-
 }

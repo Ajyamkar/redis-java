@@ -1,6 +1,5 @@
 package com.java.redis.commands;
 
-import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
 import com.java.redis.utils.ResponseConstructor;
 
@@ -18,7 +17,7 @@ public class Echo extends Command {
     }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) throws Exception {
         try {
             validateCommand(clientRequest.getArgs());
 

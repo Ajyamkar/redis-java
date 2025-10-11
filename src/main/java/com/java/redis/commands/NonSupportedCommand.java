@@ -1,6 +1,5 @@
 package com.java.redis.commands;
 
-import com.java.redis.database.RedisDB;
 import com.java.redis.models.ClientRequest;
 import com.java.redis.utils.ResponseConstructor;
 
@@ -16,7 +15,7 @@ public class NonSupportedCommand extends Command {
     }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) {
         try {
             outputStream.write(ResponseConstructor.constructErrorResponse(" unknown command " + clientRequest.getNonSupportedCommandName()));
             outputStream.flush();

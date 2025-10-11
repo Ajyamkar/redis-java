@@ -5,22 +5,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class DataStore<T> {
     private final ConcurrentHashMap<String, T> dataStore = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<String, T> getDataStore(){
+    public ConcurrentHashMap<String, T> getDataStore() {
         return dataStore;
     }
-    
+
     public void addNewData(String key, T value) {
         dataStore.put(key, value);
     }
-    
+
     public void removeData(String key) {
         dataStore.remove(key);
     }
-    
+
     public void updateData(String key, T value) {
-        if(dataStore.containsKey(key)){
-            dataStore.put(key, value);
-        }
+        dataStore.replace(key, value);
     }
 
     public T getData(String key) {

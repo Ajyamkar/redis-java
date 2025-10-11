@@ -27,7 +27,7 @@ public class RedisCommandsFactory {
     }
 
 
-    public static CommandFactory getCommand(ClientRequest clientRequest, OutputStream outputStream, RedisDB redisDB) {
+    public static CommandFactory getCommand(ClientRequest clientRequest, OutputStream outputStream) {
         try {
             CommandFactory commandFactory = registry.get(clientRequest.getCommand());
             return Objects.requireNonNullElseGet(commandFactory, NonSupportedCommandFactory::new);

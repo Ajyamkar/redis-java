@@ -19,7 +19,7 @@ public class LPop extends Command {
     }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) throws Exception {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) throws Exception {
         try {
             String key = clientRequest.getArgs().getFirst();
             int removeElementsLen = 1;
@@ -27,22 +27,22 @@ public class LPop extends Command {
                 removeElementsLen = Integer.parseInt(clientRequest.getArgs().get(1));
             }
 
-            List<String> values = redisDB.getKeyListDataStore().getData(key);
+            List<String> values = RedisDB.INSTANCE.getKeyListDataStore().getData(key);
             byte[] response;
             if (values == null || values.isEmpty()) {
                 response = ResponseConstructor.nullBulkString();
             } else if (removeElementsLen == 1) {
                 String removedValue = values.getFirst();
-                redisDB.getKeyListDataStore().updateData(key, new ArrayList<>(values.subList(1, values.size())));
+                RedisDB.INSTANCE.getKeyListDataStore().updateData(key, new ArrayList<>(values.subList(1, values.size())));
                 response = ResponseConstructor.constructBulkString(removedValue);
             } else {
                 List<String> removedValues;
                 if (removeElementsLen >= values.size()) {
                     removedValues = values;
-                    redisDB.getKeyListDataStore().updateData(key, new ArrayList<>());
+                    RedisDB.INSTANCE.getKeyListDataStore().updateData(key, new ArrayList<>());
                 } else {
                     removedValues = values.subList(0, removeElementsLen);
-                    redisDB.getKeyListDataStore().updateData(key, new ArrayList<>(values.subList(removeElementsLen, values.size())));
+                    RedisDB.INSTANCE.getKeyListDataStore().updateData(key, new ArrayList<>(values.subList(removeElementsLen, values.size())));
                 }
                 response = ResponseConstructor.constructArrayResponse(removedValues);
             }

@@ -18,14 +18,14 @@ public class LPush extends Command {
     }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) {
         try {
             List<String> args = clientRequest.getArgs();
             validateCommand(args);
             String key = args.getFirst();
             List<String> values = args.subList(1, args.size());
 
-            int response = redisDB.getKeyListDataStore().storeKeyListByPrepend(key, values);
+            int response = RedisDB.INSTANCE.getKeyListDataStore().storeKeyListByPrepend(key, values);
             if (response == -1) {
                 outputStream.write(ResponseConstructor.constructErrorResponse("Key " + key + " holds a value that is not a list."));
             } else {

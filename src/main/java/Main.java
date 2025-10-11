@@ -20,18 +20,13 @@ public class Main {
             // ensures that we don't run into 'Address already in use' errors
             serverSocket.setReuseAddress(true);
 
-            RedisDB redisDB = new RedisDB();
-
             // Continuous server running...
             while (true) {
                 // Wait for connection from client.
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New connection");
 
-                executor.submit(() -> {
-                    RedisServer redisServer = new RedisServer(clientSocket, redisDB);
-                    redisServer.respondToClientRequest();
-                });
+                executor.submit(new RedisServer(clientSocket));
             }
 
         } catch (IOException e) {

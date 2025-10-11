@@ -19,7 +19,7 @@ public class LRANGE extends Command {
     }
 
     @Override
-    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest, RedisDB redisDB) {
+    public void executeCommand(OutputStream outputStream, ClientRequest clientRequest) {
         try {
             List<String> args = clientRequest.getArgs();
             validateCommand(args);
@@ -28,7 +28,7 @@ public class LRANGE extends Command {
             int start = Integer.parseInt(args.get(1));
             int stop = Integer.parseInt(args.get(2));
 
-            List<String> values = redisDB.getKeyListDataStore().getData(key);
+            List<String> values = RedisDB.INSTANCE.getKeyListDataStore().getData(key);
 
             if (values==null|| (start>stop && stop>0) || start>=values.size()){
                 outputStream.write(ResponseConstructor.constructArrayResponse(new ArrayList<>()));
