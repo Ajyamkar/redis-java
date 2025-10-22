@@ -1,5 +1,4 @@
 import com.java.redis.RedisServer;
-import com.java.redis.database.RedisDB;
 
 import java.io.*;
 import java.net.ServerSocket;

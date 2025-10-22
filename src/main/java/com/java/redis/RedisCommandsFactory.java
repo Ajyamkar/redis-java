@@ -1,7 +1,6 @@
 package com.java.redis;
 
 import com.java.redis.commands.*;
-import com.java.redis.database.RedisDB;
 import com.java.redis.factories.commands.*;
 import com.java.redis.factories.commands.list.*;
 import com.java.redis.models.ClientRequest;
@@ -24,6 +23,7 @@ public class RedisCommandsFactory {
         registry.put(SupportedCommand.LPUSH, new LPushFactory());
         registry.put(SupportedCommand.LLEN, new LLenFactory());
         registry.put(SupportedCommand.LPOP, new LPopFactory());
+        registry.put(SupportedCommand.BLPOP, new BLPopFactory());
     }
 
 

@@ -9,5 +9,6 @@ public enum SupportedCommand {
     LRANGE,
     LPUSH,
     LLEN,
-    LPOP
+    LPOP,
+    BLPOP
 }

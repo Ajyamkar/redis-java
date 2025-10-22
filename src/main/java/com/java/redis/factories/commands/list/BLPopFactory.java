@@ -1,12 +1,12 @@
 package com.java.redis.factories.commands.list;
 
 import com.java.redis.commands.Command;
-import com.java.redis.commands.list.LLen;
+import com.java.redis.commands.list.BLPop;
 import com.java.redis.factories.commands.CommandFactory;
 
-public class LLenFactory extends CommandFactory {
+public class BLPopFactory extends CommandFactory {
     @Override
     protected Command createCommand() {
-        return new LLen();
+        return new BLPop();
     }
 }

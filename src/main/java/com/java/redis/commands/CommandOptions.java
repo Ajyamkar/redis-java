@@ -14,4 +14,5 @@ public class CommandOptions {
     public static int LPUSH_DEFAULT_ARGS_SIZE = 2;
     public static int LLEN_DEFAULT_ARGS_SIZE = 1;
     public static int LPOP_DEFAULT_ARGS_SIZE = 1;
+    public static int BLPOP_DEFAULT_ARGS_SIZE = 1;
 }
